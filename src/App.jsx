@@ -124,6 +124,7 @@ function App() {
     [subGenres],
   );
 
+  // Handles parallax effect on background image
   useEffect(() => {
     const parallaxFactor = 0.3;
     const updateBg = () => {
@@ -146,6 +147,7 @@ function App() {
     };
   }, []);
 
+  // Searching logic - filter records by search query across multiple fields
   const filtered = records.filter((r) => {
     const q = search.toLowerCase();
     return (

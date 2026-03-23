@@ -148,14 +148,8 @@ function itunesApiPlugin() {
           return;
         }
 
-        let entity = params.entity || "tvSeason";
-        const country = params.country || "us";
-
-        let shortFilm = false;
-        if (entity === "shortFilm") {
-          shortFilm = true;
-          entity = "movie";
-        }
+        let entity = params.entity;
+        const country = params.country;
 
         // PHP urlencode() encodes spaces as +
         let itunesUrl;
@@ -173,10 +167,6 @@ function itunesApiPlugin() {
             country +
             "&entity=" +
             entity;
-          if (shortFilm) {
-            itunesUrl += "&attribute=shortFilmTerm";
-            entity = "shortFilm";
-          }
         }
         itunesUrl += "&limit=25";
 

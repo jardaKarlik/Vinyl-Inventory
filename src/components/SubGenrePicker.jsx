@@ -19,10 +19,6 @@ function SubGenrePicker({
   );
 
   useEffect(() => {
-    setHighlightIndex(0);
-  }, [query, open]);
-
-  useEffect(() => {
     function handleClickOutside(e) {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         if (!document.contains(e.target)) return;
@@ -37,6 +33,7 @@ function SubGenrePicker({
     onChange([...value, item]);
     setQuery("");
     setOpen(true);
+    setHighlightIndex(0);
     inputRef.current?.focus();
   }
 
@@ -102,8 +99,12 @@ function SubGenrePicker({
           onChange={(e) => {
             setQuery(e.target.value);
             setOpen(true);
+            setHighlightIndex(0);
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            setOpen(true);
+            setHighlightIndex(0);
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Search sub genres…"
         />

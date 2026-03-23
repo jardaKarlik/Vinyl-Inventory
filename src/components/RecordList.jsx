@@ -31,6 +31,7 @@ function compareGenre(a, b) {
   });
 }
 
+// Sorts records based on the selected sort option
 function sortRecords(records, sort) {
   const [field, dir] = sort.split("-");
   const mul = dir === "desc" ? -1 : 1;
