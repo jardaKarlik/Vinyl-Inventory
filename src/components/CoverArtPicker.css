@@ -52,8 +52,19 @@
 
 .cover-picker-search {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
+}
+
+.cover-picker-search input,
+.cover-picker-country {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cover-picker-search button {
+  width: 100%;
 }
 
 .cover-picker-search input {
@@ -203,5 +214,18 @@
 
   .cover-picker-item:hover {
     background: #554a3c;
+  }
+}
+
+@media (max-width: 480px) {
+  .cover-picker-overlay {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .cover-picker {
+    max-height: 90vh;
+    border-radius: 12px 12px 8px 8px;
+    padding: 1rem;
   }
 }

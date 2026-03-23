@@ -1,6 +1,10 @@
 # Vinyl Inventory
 
-A personal vinyl record collection manager built as a single-page React app. Catalogue your records with cover art, genres, and physical storage locations, then search and sort your collection across devices.
+A personal vinyl record collection manager built as a single-page React app. Catalogue your records with cover art, genres, and physical storage locations, then search and sort your collection across devices. It was mainly built as a solution to let houseguests browse your collection easily from their phone, not as a serious collection tracker.
+
+This has also been a project to experiment with AI assisted code writing, so a lot of what you see here was built just prompting Claude for solutions. I've reviewed the code to make sure there isn't anything aggregiously awful, but for the most part have let the AI do its thing and gone in and tweaked details afterwards.
+
+It is currently very much in a pre-alpha state, with a lot of rough edges. No database solution (just writing, reading and storing data as JSON), a crappy AI Generated background image, and I'm currently just running it locally in dev mode on a PI 3.
 
 ## Features
 
@@ -10,7 +14,7 @@ A personal vinyl record collection manager built as a single-page React app. Cat
 - **Cover art search** — ported from https://github.com/bendodson/itunes-artwork-finder. Look up artwork via the iTunes Search API, with a country selector for region-specific results. Currently doesn't work very well for me (has about a 40% hit rate) so I added a secondary button that opens a more accurate website and prefills the search query
 - **Genre & sub-genre management** — user-configurable lists with inline add/delete
 - **Detail view** — click a card to see an image carousel (cover + vinyl images)
-- **Edit mode** — gated behind a client-side password prompt. This isn't intended for actual security as it is hardcoded - merely to stop someone accidentally
+- **Edit mode** — gated behind a client-side password prompt. This isn't intended for actual security as it is hardcoded to "EditRecords" - it only exists to give a more user friendly viewing layout for most users and prevent any accidental edits
 - **PWA** — installable as a Progressive Web App with service worker caching
 
 ## Tech Stack
