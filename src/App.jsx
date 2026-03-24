@@ -187,19 +187,6 @@ function App() {
       <header className="app-header">
         <div className="app-header-top">
           <h1>Vinyl Collection</h1>
-          <button
-            className={`edit-mode-btn${editMode ? " active" : ""}`}
-            onClick={() => {
-              if (editMode) {
-                setEditMode(false);
-              } else {
-                const pw = prompt("Enter password to enable editing:");
-                if (pw === "EditRecords") setEditMode(true);
-              }
-            }}
-          >
-            {editMode ? "🔒 Lock" : "✏️ Edit Mode"}
-          </button>
         </div>
         <p className="collection-count">{filtered.length} records</p>
       </header>
@@ -224,6 +211,20 @@ function App() {
           <option value="genre-asc">Genre A–Z</option>
           <option value="genre-desc">Genre Z–A</option>
         </select>
+
+        <button
+          className={`edit-mode-btn${editMode ? " active" : ""}`}
+          onClick={() => {
+            if (editMode) {
+              setEditMode(false);
+            } else {
+              const pw = prompt("Enter password to enable editing:");
+              if (pw === "EditRecords") setEditMode(true);
+            }
+          }}
+        >
+          {editMode ? "🔒 Lock" : "✏️ Edit Mode"}
+        </button>
         {editMode && (
           <AddRecordForm
             onAdd={handleAdd}
