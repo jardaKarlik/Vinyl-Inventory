@@ -17,6 +17,8 @@ function App() {
   const [sort, setSort] = useState("artist-asc");
   const [editingRecord, setEditingRecord] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
   const [genres, setGenres] = useState(DEFAULT_GENRES);
   const [subGenres, setSubGenres] = useState(DEFAULT_SUB_GENRES);
   const initialized = useRef(false);
@@ -218,8 +220,8 @@ function App() {
             if (editMode) {
               setEditMode(false);
             } else {
-              const pw = prompt("Enter password to enable editing:");
-              if (pw === "EditRecords") setEditMode(true);
+              setPasswordInput("");
+              setShowPasswordPrompt(true);
             }
           }}
         >
@@ -257,6 +259,45 @@ function App() {
           onDeleteSubGenre={handleDeleteSubGenre}
           onAddGenre={handleAddGenre}
         />
+      )}
+      {showPasswordPrompt && (
+        <div
+          className="pw-overlay"
+          onClick={() => setShowPasswordPrompt(false)}
+        >
+          <div className="pw-dialog" onClick={(e) => e.stopPropagation()}>
+            <p>Enter password to enable editing:</p>
+            <input
+              type="password"
+              className="pw-input"
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (passwordInput === "EditRecords") setEditMode(true);
+                  setShowPasswordPrompt(false);
+                } else if (e.key === "Escape") {
+                  setShowPasswordPrompt(false);
+                }
+              }}
+              autoFocus
+            />
+            <div className="pw-actions">
+              <button onClick={() => setShowPasswordPrompt(false)}>
+                Cancel
+              </button>
+              <button
+                className="pw-submit"
+                onClick={() => {
+                  if (passwordInput === "EditRecords") setEditMode(true);
+                  setShowPasswordPrompt(false);
+                }}
+              >
+                Unlock
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
