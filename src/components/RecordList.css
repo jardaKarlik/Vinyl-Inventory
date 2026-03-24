@@ -21,6 +21,6 @@
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
-  color: #9a8d7d;
+  color: var(--color-text-secondary);
   font-size: 1.1rem;
 }

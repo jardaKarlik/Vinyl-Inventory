@@ -13,8 +13,8 @@
   display: flex;
   padding: 0.4rem 0.6rem;
   border-radius: 6px;
-  border: 1px solid #5d5040;
-  background: #4a3f33;
+  border: 1px solid var(--color-border);
+  background: var(--color-input);
   color: inherit;
   font-size: 0.95rem;
   min-height: 2.2rem;
@@ -24,7 +24,7 @@
 }
 
 .subgenre-picker-input-area:focus-within {
-  outline: 2px solid #c8956c;
+  outline: 2px solid var(--color-focus);
   border-color: transparent;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .subgenre-picker-text::placeholder {
-  color: #7a6d5d;
+  color: var(--color-text-placeholder);
 }
 
 /* ── Pills ── */
@@ -49,8 +49,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  background: #a07448;
-  color: #2c2419;
+  background: var(--color-accent);
+  color: var(--color-page-bg);
   border-radius: 999px;
   padding: 0.15rem 0.5rem;
   font-size: 0.8rem;
@@ -81,8 +81,8 @@
   left: 0;
   right: 0;
   margin-top: 4px;
-  background: #4a3f33;
-  border: 1px solid #5d5040;
+  background: var(--color-input);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   max-height: 180px;
   overflow-y: auto;
@@ -121,28 +121,28 @@
 }
 
 .subgenre-option-delete:hover {
-  color: #ff4444;
+  color: var(--color-danger-hover);
 }
 
 .subgenre-picker-option.highlighted {
-  background: #a07448;
-  color: #2c2419;
+  background: var(--color-accent);
+  color: var(--color-page-bg);
 }
 
 /* ── Light mode ── */
 @media (prefers-color-scheme: light) {
   .subgenre-picker-input-area {
-    background: #4a3f33;
-    border-color: #5d5040;
+    background: var(--color-input);
+    border-color: var(--color-border);
   }
 
   .subgenre-picker-text::placeholder {
-    color: #7a6d5d;
+    color: var(--color-text-placeholder);
   }
 
   .subgenre-picker-dropdown {
-    background: #4a3f33;
-    border-color: #5d5040;
+    background: var(--color-input);
+    border-color: var(--color-border);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
@@ -151,11 +151,11 @@
   }
 
   .subgenre-option-delete:hover {
-    color: #ff4444;
+    color: var(--color-danger-hover);
   }
 
   .subgenre-picker-option.highlighted {
-    background: #a07448;
-    color: #2c2419;
+    background: var(--color-accent);
+    color: var(--color-page-bg);
   }
 }

@@ -1,9 +1,9 @@
 .add-record-toggle {
-  background: #a07448;
-  color: #2c2419;
+  background: var(--color-input);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   padding: 0.75rem 1rem;
-  border: none;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
   margin: 0;
@@ -11,12 +11,13 @@
 }
 
 .add-record-toggle:hover {
-  background: #b8865a;
-  border-color: transparent;
+  background: var(--color-hover);
+  border-color: var(--color-accent-hover);
+  color: var(--color-text);
 }
 
 .add-record-form {
-  background: #3a3127;
+  background: var(--color-surface);
   padding: 1.5rem;
   border-radius: 12px;
   margin-bottom: 0.5rem;
@@ -51,8 +52,8 @@
   width: 100%;
   padding: 0.6rem 0.8rem;
   border-radius: 6px;
-  border: 1px solid #5d5040;
-  background-color: #4a3f33;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-input);
   color: inherit;
   font-size: 0.95rem;
   box-sizing: border-box;
@@ -60,7 +61,7 @@
 }
 
 .add-record-form .form-row > select.placeholder {
-  color: #7a6d5d;
+  color: var(--color-text-placeholder);
 }
 
 .add-record-form .form-row > select {
@@ -74,7 +75,7 @@
 .add-record-form > input:focus,
 .add-record-form .form-row > input:focus,
 .add-record-form .form-row > select:focus {
-  outline: 2px solid #c8956c;
+  outline: 2px solid var(--color-focus);
   border-color: transparent;
 }
 
@@ -89,43 +90,43 @@
 }
 
 .form-actions button[type="submit"] {
-  background: #a07448;
-  color: #f5ead6;
+  background: var(--color-accent);
+  color: var(--color-text);
   border: none;
   font-weight: 600;
 }
 
 .form-actions button[type="submit"]:hover {
-  background: #b8865a;
+  background: var(--color-accent-hover);
   border-color: transparent;
 }
 
 .cancel-btn {
   background: transparent;
-  color: #b0a090;
-  border: 2px solid #5d5040;
+  color: var(--color-text-secondary);
+  border: 2px solid var(--color-border);
 }
 
 .cancel-btn:hover {
-  border-color: #7d7060;
-  background: #4a3f33;
-  color: #f5ead6;
+  border-color: var(--color-accent-hover);
+  background: var(--color-hover);
+  color: var(--color-text);
 }
 
 @media (prefers-color-scheme: light) {
   .add-record-form {
-    background: #3a3127;
+    background: var(--color-surface);
   }
 
   .add-record-form > input,
   .add-record-form .form-row > input,
   .add-record-form .form-row > select {
-    background-color: #4a3f33;
-    border-color: #5d5040;
+    background-color: var(--color-input);
+    border-color: var(--color-border);
   }
 
   .cancel-btn {
-    color: #b0a090;
-    border-color: #5d5040;
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
   }
 }

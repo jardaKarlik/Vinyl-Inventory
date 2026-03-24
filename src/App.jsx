@@ -206,8 +206,8 @@ function App() {
         >
           <option value="artist-asc">Artist A–Z</option>
           <option value="artist-desc">Artist Z–A</option>
-          <option value="year-asc">Year Old–New</option>
-          <option value="year-desc">Year New–Old</option>
+          <option value="year-asc">Year Asc</option>
+          <option value="year-desc">Year Desc</option>
           <option value="genre-asc">Genre A–Z</option>
           <option value="genre-desc">Genre Z–A</option>
         </select>
@@ -223,7 +223,7 @@ function App() {
             }
           }}
         >
-          {editMode ? "🔒 Lock" : "✏️ Edit Mode"}
+          {editMode ? "Lock" : "Edit Mode"}
         </button>
         {editMode && (
           <AddRecordForm

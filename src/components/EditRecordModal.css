@@ -10,7 +10,7 @@
 }
 
 .edit-modal {
-  background: #3a3127;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 1.5rem;
   width: 100%;
@@ -40,21 +40,21 @@
 .edit-modal-close {
   background: none;
   border: none;
-  color: #9a8d7d;
+  color: var(--color-text-secondary);
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
 }
 
 .edit-modal-close:hover {
-  color: #ff6b6b;
+  color: var(--color-danger);
   border-color: transparent;
 }
 
 .edit-modal-delete {
   background: rgba(255, 107, 107, 0.15);
-  border: 2px solid #ff6b6b;
-  color: #ff6b6b;
+  border: 2px solid var(--color-danger);
+  color: var(--color-danger);
   border-radius: 8px;
   padding: 0.35rem 0.6rem;
   font-size: 0.85rem;
@@ -63,9 +63,9 @@
 }
 
 .edit-modal-delete:hover {
-  border-color: #ff4444;
+  border-color: var(--color-danger-hover);
   background: rgba(255, 107, 107, 0.25);
-  color: #ff4444;
+  color: var(--color-danger-hover);
 }
 
 .edit-modal-cover {
@@ -91,7 +91,7 @@
   width: 189px;
   height: 189px;
   border-radius: 6px;
-  background: #4a3f33;
+  background: var(--color-input);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,8 +100,8 @@
 }
 
 .edit-modal-cover-btn {
-  background: #a07448;
-  color: #2c2419;
+  background: var(--color-accent);
+  color: var(--color-page-bg);
   border: none;
   border-radius: 6px;
   padding: 0.5rem 1rem;
@@ -111,7 +111,7 @@
 }
 
 .edit-modal-cover-btn:hover {
-  background: #b8865a;
+  background: var(--color-accent-hover);
   border-color: transparent;
 }
 
@@ -119,8 +119,8 @@
   display: inline-block;
   text-decoration: none;
   text-align: center;
-  background: #a07448;
-  color: #2c2419;
+  background: var(--color-accent);
+  color: var(--color-page-bg);
   border: none;
   border-radius: 6px;
   padding: 0.4rem 1rem;
@@ -130,7 +130,7 @@
 }
 
 .edit-modal-cover-link:hover {
-  color: #2c2419;
+  color: var(--color-page-bg);
 }
 
 .edit-modal-cover-actions {
@@ -145,7 +145,7 @@
   gap: 0.3rem;
   margin-bottom: 0.75rem;
   font-size: 0.85rem;
-  color: #b0a090;
+  color: var(--color-text-secondary);
 }
 
 .edit-modal-field {
@@ -157,15 +157,15 @@
 
 .edit-modal-label {
   font-size: 0.85rem;
-  color: #b0a090;
+  color: var(--color-text-secondary);
 }
 
 .edit-modal-form input,
 .edit-modal-form select {
   padding: 0.6rem 0.8rem;
   border-radius: 6px;
-  border: 1px solid #5d5040;
-  background-color: #4a3f33;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-input);
   color: inherit;
   font-size: 0.95rem;
   width: 100%;
@@ -174,7 +174,7 @@
 }
 
 .edit-modal-form select.placeholder {
-  color: #7a6d5d;
+  color: var(--color-text-placeholder);
 }
 
 .edit-modal-form select {
@@ -187,7 +187,7 @@
 
 .edit-modal-form input:focus,
 .edit-modal-form select:focus {
-  outline: 2px solid #c8956c;
+  outline: 2px solid var(--color-focus);
   border-color: transparent;
 }
 
@@ -212,27 +212,27 @@
 }
 
 .edit-modal-actions button[type="submit"] {
-  background: #a07448;
-  color: #f5ead6;
+  background: var(--color-accent);
+  color: var(--color-text);
   border: none;
   font-weight: 600;
 }
 
 .edit-modal-actions button[type="submit"]:hover {
-  background: #b8865a;
+  background: var(--color-accent-hover);
   border-color: transparent;
 }
 
 .edit-modal-actions .cancel-btn {
   background: transparent;
-  color: #b0a090;
-  border: 2px solid #5d5040;
+  color: var(--color-text-secondary);
+  border: 2px solid var(--color-border);
 }
 
 .edit-modal-actions .cancel-btn:hover {
-  border-color: #7d7060;
-  background: #4a3f33;
-  color: #f5ead6;
+  border-color: var(--color-accent-hover);
+  background: var(--color-hover);
+  color: var(--color-text);
 }
 
 /* ── Read-only compact layout ── */
@@ -334,7 +334,7 @@
   width: 160px;
   height: 160px;
   border-radius: 10px;
-  background: #4a3f33;
+  background: var(--color-input);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -363,13 +363,13 @@
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #b0a090;
+  color: var(--color-text-secondary);
   font-weight: 600;
 }
 
 .readonly-value {
   font-size: 0.95rem;
-  color: #ede4d4;
+  color: var(--color-text);
   line-height: 1.3;
 }
 

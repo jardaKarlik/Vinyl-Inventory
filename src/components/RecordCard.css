@@ -1,7 +1,7 @@
 .record-card {
   position: relative;
-  background: #3a3127;
   border-radius: 12px;
+  background: var(--color-surface);
   overflow: hidden;
   cursor: pointer;
   touch-action: manipulation;
@@ -62,7 +62,7 @@
   align-items: center;
   justify-content: center;
   font-size: 4rem;
-  background: #4a3f33;
+  background: var(--color-input);
 }
 
 .record-info {
@@ -72,18 +72,19 @@
 .record-title {
   margin: 0 0 0.25rem;
   font-size: 1rem;
+  color: var(--color-text);
 }
 
 .record-artist {
   margin: 0 0 0.25rem;
-  color: #b0a090;
+  color: var(--color-text-secondary);
   font-size: 0.8rem;
   font-weight: bold;
 }
 
 .record-meta {
   margin: 0 0 0.25rem;
-  color: #8a7d6d;
+  color: var(--color-text-secondary);
   font-size: 0.8rem;
 }
 
@@ -92,12 +93,12 @@
 }
 
 .record-subgenres {
-  color: #7d7060;
+  color: var(--color-text-muted);
 }
 
 .record-location {
   margin: 0;
-  color: #7d7060;
+  color: var(--color-text-muted);
   font-size: 0.75rem;
 }
 
@@ -136,8 +137,7 @@
 
 @media (prefers-color-scheme: light) {
   .record-card {
-    background: #3a3127;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: var(--color-surface);
   }
 
   .record-card:hover {
@@ -145,14 +145,11 @@
   }
 
   .record-cover-placeholder {
-    background: #4a3f33;
-  }
-
-  .record-artist {
-    color: #b0a090;
+    background: var(--color-input);
+    color: var(--color-text-secondary);
   }
 
   .record-meta {
-    color: #8a7d6d;
+    color: var(--color-text-muted);
   }
 }
