@@ -7,7 +7,7 @@
 .app-header {
   margin-bottom: 1.5rem;
   margin-inline: auto;
-  background: #3a3127;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 0rem 1.25rem 0.5rem 1.25rem;
   display: table;
@@ -26,11 +26,11 @@
 }
 
 .edit-mode-btn {
-  padding: 0.5rem 1rem;
-  border: 2px solid #5d5040;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
-  background: #4a3f33;
-  color: #b0a090;
+  background: var(--color-input);
+  color: var(--color-text-secondary);
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s ease;
@@ -38,20 +38,20 @@
 }
 
 .edit-mode-btn:hover {
-  background: #5d5040;
-  border-color: #7d7060;
-  color: #f5ead6;
+  background: var(--color-hover);
+  border-color: var(--color-accent-hover);
+  color: var(--color-text);
 }
 
 .edit-mode-btn.active {
-  background: #1a3a1a;
-  border-color: #4caf50;
-  color: #4caf50;
+  background: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
 
 .collection-count {
   margin: 0.25rem 0 0;
-  color: #d4c8b4;
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
   text-align: center;
 }
@@ -69,15 +69,15 @@
   min-width: 0;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  border: 1px solid #5d5040;
-  background: #3a3127;
+  border: 1px solid var(--color-border);
+  background: var(--color-input);
   color: inherit;
   font-size: 1rem;
   box-sizing: border-box;
 }
 
 .search-input:focus {
-  outline: 2px solid #c8956c;
+  outline: 2px solid var(--color-focus);
   border-color: transparent;
 }
 
@@ -88,14 +88,14 @@
 }
 
 .sort-select:focus {
-  outline: 2px solid #c8956c;
+  outline: 2px solid var(--color-focus);
   border-color: transparent;
 }
 
 @media (prefers-color-scheme: light) {
   .search-input {
-    background: #3a3127;
-    border-color: #5d5040;
+    background: var(--color-input);
+    border-color: var(--color-border);
   }
 
   .sort-select {
@@ -103,21 +103,21 @@
   }
 
   .edit-mode-btn {
-    background: #4a3f33;
-    border-color: #5d5040;
-    color: #b0a090;
+    background: var(--color-input);
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
   }
 
   .edit-mode-btn:hover {
-    background: #5d5040;
-    border-color: #7d7060;
-    color: #f5ead6;
+    background: var(--color-hover);
+    border-color: var(--color-accent-hover);
+    color: var(--color-text);
   }
 
   .edit-mode-btn.active {
-    background: #1a3a1a;
-    border-color: #4caf50;
-    color: #4caf50;
+    background: var(--color-success-bg);
+    border-color: var(--color-success);
+    color: var(--color-success);
   }
 }
 

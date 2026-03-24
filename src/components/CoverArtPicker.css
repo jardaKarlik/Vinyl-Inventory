@@ -10,7 +10,7 @@
 }
 
 .cover-picker {
-  background: #3a3127;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 1.5rem;
   width: 100%;
@@ -33,20 +33,20 @@
 .cover-picker-close {
   background: none;
   border: none;
-  color: #9a8d7d;
+  color: var(--color-text-secondary);
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
 }
 
 .cover-picker-close:hover {
-  color: #ff6b6b;
+  color: var(--color-danger);
   border-color: transparent;
 }
 
 .cover-picker-subtitle {
   margin: 0.25rem 0 1rem;
-  color: #9a8d7d;
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
 }
 
@@ -71,20 +71,20 @@
   flex: 1;
   padding: 0.6rem 0.8rem;
   border-radius: 6px;
-  border: 1px solid #5d5040;
-  background: #4a3f33;
+  border: 1px solid var(--color-border);
+  background: var(--color-input);
   color: inherit;
   font-size: 0.95rem;
 }
 
 .cover-picker-search input:focus {
-  outline: 2px solid #c8956c;
+  outline: 2px solid var(--color-focus);
   border-color: transparent;
 }
 
 .cover-picker-search button {
-  background: #a07448;
-  color: #2c2419;
+  background: var(--color-accent);
+  color: var(--color-page-bg);
   border: none;
   border-radius: 6px;
   padding: 0.6rem 1rem;
@@ -93,15 +93,15 @@
 }
 
 .cover-picker-search button:hover {
-  background: #b8865a;
+  background: var(--color-accent-hover);
   border-color: transparent;
 }
 
 .cover-picker-country {
   padding: 0.6rem 0.4rem;
   border-radius: 6px;
-  border: 1px solid #5d5040;
-  background: #4a3f33;
+  border: 1px solid var(--color-border);
+  background: var(--color-input);
   color: inherit;
   font-size: 0.85rem;
   cursor: pointer;
@@ -115,21 +115,21 @@
 
 .cover-picker-status {
   text-align: center;
-  color: #9a8d7d;
+  color: var(--color-text-secondary);
   padding: 1rem;
   margin: 0;
 }
 
 .cover-picker-error {
-  color: #ff6b6b;
+  color: var(--color-danger);
 }
 
 .cover-picker-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: #4a3f33;
-  border: 1px solid #5d5040;
+  background: var(--color-input);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 0.5rem;
   cursor: pointer;
@@ -139,8 +139,8 @@
 }
 
 .cover-picker-item:hover {
-  border-color: #a07448;
-  background: #554a3c;
+  border-color: var(--color-accent-hover);
+  background: var(--color-hover);
 }
 
 .cover-picker-item img {
@@ -167,7 +167,7 @@
 
 .cover-picker-label small {
   font-size: 0.8rem;
-  color: #9a8d7d;
+  color: var(--color-text-muted);
 }
 
 /* Button on RecordCard for missing covers */
@@ -177,7 +177,7 @@
   left: 0;
   right: 0;
   background: rgba(200, 149, 108, 0.85);
-  color: #2c2419;
+  color: var(--color-page-bg);
   border: none;
   border-radius: 0;
   padding: 0.4rem;
@@ -198,22 +198,22 @@
 
 @media (prefers-color-scheme: light) {
   .cover-picker {
-    background: #3a3127;
+    background: var(--color-surface);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 
   .cover-picker-search input {
-    background: #4a3f33;
-    border-color: #5d5040;
+    background: var(--color-input);
+    border-color: var(--color-border);
   }
 
   .cover-picker-item {
-    background: #4a3f33;
-    border-color: #5d5040;
+    background: var(--color-input);
+    border-color: var(--color-border);
   }
 
   .cover-picker-item:hover {
-    background: #554a3c;
+    background: var(--color-hover);
   }
 }
 
