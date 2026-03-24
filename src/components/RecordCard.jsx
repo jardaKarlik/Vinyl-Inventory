@@ -18,7 +18,9 @@ function RecordCard({ record, onClick }) {
     const elapsedMs = performance.now() - touchStartMsRef.current;
 
     if (elapsedMs <= TAP_MAX_MS) {
-      onClick?.(e);
+      // This set timeout queues the onClick to run after the native click event
+      // This prevents the native click from unintentionally firing on the editing modal
+      setTimeout(() => onClick?.(e), 0);
     }
   }
 
