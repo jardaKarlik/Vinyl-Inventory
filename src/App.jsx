@@ -127,15 +127,24 @@ function App() {
   );
 
   // Handles parallax effect on background image
+  const maxScrollHeightRef = useRef(0);
   useEffect(() => {
     const parallaxFactor = 0.3;
     const updateBg = () => {
       if (!bgRef.current) return;
-      const maxScroll =
-        document.documentElement.scrollHeight - window.innerHeight;
+      const currentScrollHeight = document.documentElement.scrollHeight;
+      if (currentScrollHeight > maxScrollHeightRef.current) {
+        maxScrollHeightRef.current = currentScrollHeight;
+      }
+      const maxScroll = maxScrollHeightRef.current - window.innerHeight;
       const extraHeight = maxScroll * parallaxFactor;
       bgRef.current.style.height = `calc(100vh + ${extraHeight}px)`;
-      bgRef.current.style.transform = `translateY(${window.scrollY * -parallaxFactor}px)`;
+      const currentMaxScroll = currentScrollHeight - window.innerHeight;
+      const clampedScroll = Math.min(
+        window.scrollY,
+        Math.max(0, currentMaxScroll),
+      );
+      bgRef.current.style.transform = `translateY(${clampedScroll * -parallaxFactor}px)`;
     };
     updateBg();
     window.addEventListener("scroll", updateBg, { passive: true });

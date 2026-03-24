@@ -68,7 +68,7 @@
   padding: 0 0.1rem;
   display: flex;
   align-items: center;
-  margin-top: -2.5px;
+  margin-top: -1px;
 }
 
 .subgenre-pill-remove:hover {
