@@ -11,6 +11,7 @@
   border-radius: 12px;
   padding: 0rem 1.25rem 0.5rem 1.25rem;
   display: table;
+  text-align: center;
 }
 
 .app-header-top {
@@ -21,7 +22,7 @@
 
 .app-header h1 {
   margin: 0;
-  font-size: 4rem;
+  font-size: 3rem;
 }
 
 .edit-mode-btn {
