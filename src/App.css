@@ -6,9 +6,12 @@
 
 .app-header {
   margin-bottom: 1.5rem;
+  margin-inline: auto;
   background: #3a3127;
   border-radius: 12px;
-  padding: 1rem 1.25rem;
+  padding: 0rem 1.25rem 0.5rem 1.25rem;
+  display: table;
+  text-align: center;
 }
 
 .app-header-top {
@@ -19,7 +22,7 @@
 
 .app-header h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 3rem;
 }
 
 .edit-mode-btn {
@@ -50,6 +53,7 @@
   margin: 0.25rem 0 0;
   color: #d4c8b4;
   font-size: 0.95rem;
+  text-align: center;
 }
 
 .search-sort-row {
@@ -114,5 +118,15 @@
     background: #1a3a1a;
     border-color: #4caf50;
     color: #4caf50;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-input {
+    flex-basis: 100%;
+  }
+
+  .search-sort-row {
+    justify-content: flex-end;
   }
 }
