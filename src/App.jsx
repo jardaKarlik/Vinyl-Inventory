@@ -34,12 +34,16 @@ function App() {
     setSearch("");
   }, [activeTab]);
 
-  // Load digital tracks from server on mount
+  // Load digital tracks — dev uses API middleware, production uses static JSON in /public
   useEffect(() => {
-    fetch("/api/digital-tracks")
+    const url = import.meta.env.DEV
+      ? "/api/digital-tracks"
+      : `${import.meta.env.BASE_URL}digitalTracks.json`;
+    fetch(url)
       .then((r) => r.json())
       .then((data) => {
-        setDigitalTracks(data.tracks ?? []);
+        // API returns { tracks: [] }, static JSON is a plain array
+        setDigitalTracks(Array.isArray(data) ? data : (data.tracks ?? []));
         setDigitalLoading(false);
       })
       .catch((e) => {
