@@ -256,15 +256,6 @@ function App() {
             className={`tab-btn${activeTab === "digital" ? " active" : ""}`}
             onClick={() => setActiveTab("digital")}
           >
-<<<<<<< HEAD
-          <button
-  className={activeTab === "genre-map" ? "tab-btn active" : "tab-btn"}
-  onClick={() => setActiveTab("genre-map")}
->
-        🗺 Genre Map
-            </button>
-=======
->>>>>>> be09faf8624e9a0816954dda5ce5b2058835b84a
             💿 Digital ({digitalTracks.length})
           </button>
           <button
