@@ -3,6 +3,7 @@ import bgImage from "./assets/RecordCollectionBG.png";
 import RecordList from "./components/RecordList";
 import AddRecordForm from "./components/AddRecordForm";
 import EditRecordModal from "./components/EditRecordModal";
+import DigitalTrackList from "./components/DigitalTrackList";
 import { sampleRecords, generateId } from "./data/records.js";
 import {
   GENRES as DEFAULT_GENRES,
@@ -11,7 +12,10 @@ import {
 import "./App.css";
 
 function App() {
+  const [activeTab, setActiveTab] = useState("vinyl"); // "vinyl" | "digital"
   const [records, setRecords] = useState([]);
+  const [digitalTracks, setDigitalTracks] = useState([]);
+  const [digitalLoading, setDigitalLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("artist-asc");
@@ -24,6 +28,25 @@ function App() {
   const initialized = useRef(false);
   const optionsInitialized = useRef(false);
   const bgRef = useRef(null);
+
+  // Reset search when switching tabs
+  useEffect(() => {
+    setSearch("");
+  }, [activeTab]);
+
+  // Load digital tracks from server on mount
+  useEffect(() => {
+    fetch("/api/digital-tracks")
+      .then((r) => r.json())
+      .then((data) => {
+        setDigitalTracks(data.tracks ?? []);
+        setDigitalLoading(false);
+      })
+      .catch((e) => {
+        console.error("Failed to load digital tracks:", e);
+        setDigitalLoading(false);
+      });
+  }, []);
 
   // Load genre options from server on mount
   useEffect(() => {
@@ -45,7 +68,6 @@ function App() {
     fetch("/api/records")
       .then((r) => r.json())
       .then((data) => {
-        // If server has saved data use it, otherwise seed with defaults
         setRecords(data.records ?? sampleRecords);
         setLoading(false);
         initialized.current = true;
@@ -126,7 +148,7 @@ function App() {
     [subGenres],
   );
 
-  // Handles parallax effect on background image
+  // Parallax effect
   const maxScrollHeightRef = useRef(0);
   useEffect(() => {
     const parallaxFactor = 0.3;
@@ -158,8 +180,8 @@ function App() {
     };
   }, []);
 
-  // Searching logic - filter records by search query across multiple fields
-  const filtered = records.filter((r) => {
+  // Filter vinyl records
+  const filteredRecords = records.filter((r) => {
     const q = search.toLowerCase();
     return (
       r.title.toLowerCase().includes(q) ||
@@ -171,6 +193,18 @@ function App() {
     );
   });
 
+  // Filter digital tracks
+  const filteredDigital = digitalTracks.filter((t) => {
+    const q = search.toLowerCase();
+    return (
+      t.title.toLowerCase().includes(q) ||
+      (t.artist && t.artist.toLowerCase().includes(q)) ||
+      (t.genre && t.genre.toLowerCase().includes(q)) ||
+      (t.album && t.album.toLowerCase().includes(q)) ||
+      (t.folder && t.folder.toLowerCase().includes(q))
+    );
+  });
+
   if (loading) {
     return (
       <>
@@ -179,14 +213,18 @@ function App() {
           ref={bgRef}
           style={{ backgroundImage: `url(${bgImage})` }}
         />
-        <div
-          style={{ textAlign: "center", marginTop: "4rem", fontSize: "1.2rem" }}
-        >
+        <div style={{ textAlign: "center", marginTop: "4rem", fontSize: "1.2rem" }}>
           Loading collection…
         </div>
       </>
     );
   }
+
+  const isVinyl = activeTab === "vinyl";
+  const count = isVinyl ? filteredRecords.length : filteredDigital.length;
+  const countLabel = isVinyl
+    ? `${count} record${count !== 1 ? "s" : ""}`
+    : `${count} track${count !== 1 ? "s" : ""}`;
 
   return (
     <>
@@ -195,64 +233,113 @@ function App() {
         ref={bgRef}
         style={{ backgroundImage: `url(${bgImage})` }}
       />
+
       <header className="app-header">
         <div className="app-header-top">
-          <h1>Vinyl Collection</h1>
+          <h1>Music Collection</h1>
         </div>
-        <p className="collection-count">{filtered.length} records</p>
+
+        {/* Tab switcher */}
+        <div className="tab-switcher">
+          <button
+            className={`tab-btn${isVinyl ? " active" : ""}`}
+            onClick={() => setActiveTab("vinyl")}
+          >
+            🎵 Vinyl ({records.length})
+          </button>
+          <button
+            className={`tab-btn${!isVinyl ? " active" : ""}`}
+            onClick={() => setActiveTab("digital")}
+          >
+            💿 Digital ({digitalTracks.length})
+          </button>
+        </div>
+
+        <p className="collection-count">{countLabel}</p>
       </header>
 
       <div className="search-sort-row">
         <input
           className="search-input"
           type="text"
-          placeholder="Search by title, artist, genre, or location…"
+          placeholder={
+            isVinyl
+              ? "Search by title, artist, genre, or location…"
+              : "Search by title, artist, genre, or folder…"
+          }
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select
-          className="sort-select"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        >
-          <option value="artist-asc">Artist A–Z</option>
-          <option value="artist-desc">Artist Z–A</option>
-          <option value="year-asc">Year Asc</option>
-          <option value="year-desc">Year Desc</option>
-          <option value="genre-asc">Genre A–Z</option>
-          <option value="genre-desc">Genre Z–A</option>
-        </select>
 
-        <button
-          className={`edit-mode-btn${editMode ? " active" : ""}`}
-          onClick={() => {
-            if (editMode) {
-              setEditMode(false);
-            } else {
-              setPasswordInput("");
-              setShowPasswordPrompt(true);
-            }
-          }}
-        >
-          {editMode ? "Lock" : "Edit Mode"}
-        </button>
-        {editMode && (
-          <AddRecordForm
-            onAdd={handleAdd}
-            genres={genres}
-            subGenres={subGenres}
-            onAddSubGenre={handleAddSubGenre}
-            onDeleteSubGenre={handleDeleteSubGenre}
-            onAddGenre={handleAddGenre}
-          />
+        {isVinyl && (
+          <>
+            <select
+              className="sort-select"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="artist-asc">Artist A–Z</option>
+              <option value="artist-desc">Artist Z–A</option>
+              <option value="year-asc">Year Asc</option>
+              <option value="year-desc">Year Desc</option>
+              <option value="genre-asc">Genre A–Z</option>
+              <option value="genre-desc">Genre Z–A</option>
+            </select>
+
+            <button
+              className={`edit-mode-btn${editMode ? " active" : ""}`}
+              onClick={() => {
+                if (editMode) {
+                  setEditMode(false);
+                } else {
+                  setPasswordInput("");
+                  setShowPasswordPrompt(true);
+                }
+              }}
+            >
+              {editMode ? "Lock" : "Edit Mode"}
+            </button>
+
+            {editMode && (
+              <AddRecordForm
+                onAdd={handleAdd}
+                genres={genres}
+                subGenres={subGenres}
+                onAddSubGenre={handleAddSubGenre}
+                onDeleteSubGenre={handleDeleteSubGenre}
+                onAddGenre={handleAddGenre}
+              />
+            )}
+          </>
+        )}
+
+        {!isVinyl && (
+          <select
+            className="sort-select"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+          >
+            <option value="artist-asc">Artist A–Z</option>
+            <option value="artist-desc">Artist Z–A</option>
+            <option value="year-asc">Year Asc</option>
+            <option value="year-desc">Year Desc</option>
+            <option value="genre-asc">Genre A–Z</option>
+            <option value="genre-desc">Genre Z–A</option>
+            <option value="bpm-asc">BPM Low–High</option>
+            <option value="bpm-desc">BPM High–Low</option>
+          </select>
         )}
       </div>
 
-      <RecordList
-        records={filtered}
-        sort={sort}
-        onClickRecord={(record) => setEditingRecord(record)}
-      />
+      {isVinyl ? (
+        <RecordList
+          records={filteredRecords}
+          sort={sort}
+          onClickRecord={(record) => setEditingRecord(record)}
+        />
+      ) : (
+        <DigitalTrackList tracks={filteredDigital} sort={sort} />
+      )}
 
       {editingRecord && (
         <EditRecordModal
@@ -269,6 +356,7 @@ function App() {
           onAddGenre={handleAddGenre}
         />
       )}
+
       {showPasswordPrompt && (
         <div
           className="pw-overlay"

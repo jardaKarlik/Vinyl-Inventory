@@ -1,0 +1,134 @@
+/* DigitalTrackList.css */
+
+.digital-track-list {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+.digital-track-header,
+.digital-track-row {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1.5fr 0.7fr 0.7fr 0.7fr 0.7fr;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+}
+
+.digital-track-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.25rem;
+}
+
+.digital-track-row {
+  background: rgba(30, 20, 10, 0.6);
+  border-radius: 6px;
+  margin-bottom: 3px;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+  transition: background 0.15s;
+  cursor: default;
+}
+
+.digital-track-row:hover {
+  background: rgba(80, 55, 25, 0.7);
+}
+
+.col-artist,
+.col-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.col-artist {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+}
+
+.col-title {
+  font-weight: 500;
+}
+
+.col-bpm,
+.col-duration {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dim {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Key badge */
+.key-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.03em;
+}
+
+/* Format badge */
+.format-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+}
+.format-badge.format-flac { background: rgba(100, 180, 120, 0.3); color: #8fe0a8; }
+.format-badge.format-mp3  { background: rgba(100, 140, 220, 0.3); color: #90b8f0; }
+.format-badge.format-wav  { background: rgba(220, 180, 80, 0.3);  color: #f0d890; }
+.format-badge.format-aif,
+.format-badge.format-aiff { background: rgba(200, 100, 200, 0.3); color: #e0a0e0; }
+.format-badge.format-m4a  { background: rgba(220, 100, 80, 0.3);  color: #f0a898; }
+
+.digital-empty {
+  text-align: center;
+  margin-top: 4rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.1rem;
+}
+
+/* Tab switcher — add to App.css or here */
+.tab-switcher {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.tab-btn {
+  padding: 0.4rem 1.5rem;
+  border-radius: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tab-btn.active {
+  background: rgba(139, 90, 43, 0.8);
+  border-color: rgba(210, 150, 80, 0.8);
+  color: #fff;
+}
