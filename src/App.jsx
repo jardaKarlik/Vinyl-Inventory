@@ -12,7 +12,7 @@ import {
 import "./App.css";
 
 function App() {
-  const [activeTab, setActiveTab] = useState("vinyl"); // "vinyl" | "digital"
+  const [activeTab, setActiveTab] = useState("vinyl"); // "vinyl" | "digital" | "genre-map"
   const [records, setRecords] = useState([]);
   const [digitalTracks, setDigitalTracks] = useState([]);
   const [digitalLoading, setDigitalLoading] = useState(true);
@@ -255,6 +255,13 @@ function App() {
             className={`tab-btn${!isVinyl ? " active" : ""}`}
             onClick={() => setActiveTab("digital")}
           >
+          <button
+  className={activeTab === "genre-map" ? "tab-btn active" : "tab-btn"}
+  onClick={() => setActiveTab("genre-map")}
+  style={{ display: "flex", alignItems: "center", gap: 6 }}
+>
+        🗺 Genre Map
+            </button>
             💿 Digital ({digitalTracks.length})
           </button>
         </div>
@@ -405,3 +412,4 @@ function App() {
 }
 
 export default App;
+import GenreMap from "./components/GenreMap";
