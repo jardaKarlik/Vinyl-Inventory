@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/Vinyl-Inventory/sw.js', { scope: '/Vinyl-Inventory/' })})}
