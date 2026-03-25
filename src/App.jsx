@@ -246,7 +246,7 @@ function App() {
         {/* Tab switcher */}
         <div className="tab-switcher">
           <button
-            className={`tab-btn${isVinyl ? " active" : ""}`}
+            className={`tab-btn${activeTab === "vinyl" ? " active" : ""}`}
             onClick={() => setActiveTab("vinyl")}
           >
             🎵 Vinyl ({records.length})
@@ -258,7 +258,6 @@ function App() {
           <button
   className={activeTab === "genre-map" ? "tab-btn active" : "tab-btn"}
   onClick={() => setActiveTab("genre-map")}
-  style={{ display: "flex", alignItems: "center", gap: 6 }}
 >
         🗺 Genre Map
             </button>
