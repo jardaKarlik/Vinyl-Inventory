@@ -280,6 +280,7 @@ function itunesApiPlugin() {
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/Vinyl-Inventory/',
   plugins: [
     react(),
     VitePWA({
