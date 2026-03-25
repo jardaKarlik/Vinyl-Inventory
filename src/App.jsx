@@ -342,13 +342,17 @@ function App() {
         )}
       </div>
 
-      {activeTab === "vinyl" ? (
-  <RecordList ... />
-) : activeTab === "digital" ? (
-  <DigitalTrackList ... />
-) : (
-  <GenreMap />
-)}
+{activeTab === "vinyl" ? (
+          <RecordList
+            records={filteredRecords}
+            sort={sort}
+            onClickRecord={(record) => setEditingRecord(record)}
+          />
+        ) : activeTab === "digital" ? (
+          <DigitalTrackList tracks={filteredDigital} sort={sort} />
+        ) : (
+          <GenreMap />
+        )}
 
       {editingRecord && (
         <EditRecordModal
