@@ -4,6 +4,7 @@ import RecordList from "./components/RecordList";
 import AddRecordForm from "./components/AddRecordForm";
 import EditRecordModal from "./components/EditRecordModal";
 import DigitalTrackList from "./components/DigitalTrackList";
+import GenreMap from "./components/GenreMap";
 import { sampleRecords, generateId } from "./data/records.js";
 import {
   GENRES as DEFAULT_GENRES,
@@ -252,17 +253,16 @@ function App() {
             🎵 Vinyl ({records.length})
           </button>
           <button
-            className={`tab-btn${!isVinyl ? " active" : ""}`}
+            className={`tab-btn${activeTab === "digital" ? " active" : ""}`}
             onClick={() => setActiveTab("digital")}
           >
-          <button
-  className={activeTab === "genre-map" ? "tab-btn active" : "tab-btn"}
-  onClick={() => setActiveTab("genre-map")}
-  style={{ display: "flex", alignItems: "center", gap: 6 }}
->
-        🗺 Genre Map
-            </button>
             💿 Digital ({digitalTracks.length})
+          </button>
+          <button
+            className={`tab-btn${activeTab === "genre-map" ? " active" : ""}`}
+            onClick={() => setActiveTab("genre-map")}
+          >
+            🗺 Genre Map
           </button>
         </div>
 
@@ -342,15 +342,13 @@ function App() {
         )}
       </div>
 
-      {isVinyl ? (
-        <RecordList
-          records={filteredRecords}
-          sort={sort}
-          onClickRecord={(record) => setEditingRecord(record)}
-        />
-      ) : (
-        <DigitalTrackList tracks={filteredDigital} sort={sort} />
-      )}
+      {activeTab === "vinyl" ? (
+  <RecordList ... />
+) : activeTab === "digital" ? (
+  <DigitalTrackList ... />
+) : (
+  <GenreMap />
+)}
 
       {editingRecord && (
         <EditRecordModal
