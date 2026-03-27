@@ -353,7 +353,7 @@ function App() {
         ) : (
           <GenreMap />
         )}
-
+        
       {editingRecord && (
         <EditRecordModal
           key={editingRecord.id}
@@ -414,4 +414,3 @@ function App() {
 }
 
 export default App;
-import GenreMap from "./components/GenreMap";
