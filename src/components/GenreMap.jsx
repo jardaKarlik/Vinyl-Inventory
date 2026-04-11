@@ -48,6 +48,14 @@ export default function GenreMap() {
   const animRef = useRef(null);
   const lastTapRef = useRef(0);
 
+  // ── Responsive layout ──────────────────────────────────────────────────
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   // ── Load data ──────────────────────────────────────────────────────────
   useEffect(() => {
     const url = import.meta.env.DEV
@@ -487,9 +495,9 @@ export default function GenreMap() {
   }
 
   return (
-    <div style={styles.root}>
+    <div style={{ ...styles.root, ...(isMobile && { flexDirection: "column", height: "auto", minHeight: 0, overflow: "visible" }) }}>
       {/* ── Canvas area ── */}
-      <div style={styles.canvasWrap}>
+      <div style={{ ...styles.canvasWrap, ...(isMobile && { flex: "none", height: "min(55vh, 400px)" }) }}>
         <canvas
           ref={canvasRef}
           style={styles.canvas}
@@ -506,7 +514,7 @@ export default function GenreMap() {
 
         {/* Search */}
         <input
-          style={styles.search}
+          style={{ ...styles.search, ...(isMobile && { width: 160 }) }}
           placeholder="Search genres…"
           value={search}
           onChange={(e) => {
@@ -526,7 +534,7 @@ export default function GenreMap() {
         />
 
         {/* Breadcrumb */}
-        <div style={styles.breadcrumb}>
+        <div style={{ ...styles.breadcrumb, ...(isMobile && { top: 48, left: 14, right: 44, flexWrap: "wrap" }) }}>
           <span style={styles.crumb} onClick={() => { setNavStack([]); setCurrentRoot(null); setSelectedId(null); }}>All Genres</span>
           {crumbs.map((c) => (
             <span key={c.id}>
@@ -558,12 +566,14 @@ export default function GenreMap() {
 
         {/* Hint */}
         {!selectedId && (
-          <div style={styles.hint}>Click a node to explore · Double-click to drill in</div>
+          <div style={styles.hint}>
+            {isMobile ? "Tap to explore · Double-tap to drill in" : "Click a node to explore · Double-click to drill in"}
+          </div>
         )}
       </div>
 
       {/* ── Side Panel ── */}
-      <div style={styles.panel}>
+      <div style={{ ...styles.panel, ...(isMobile && { width: "100%", borderLeft: "none", borderTop: "1px solid rgba(180,140,80,0.12)" }) }}>
         {/* Back */}
         {navStack.length > 0 && (
           <div style={styles.panelBack} onClick={navigateBack}>
@@ -598,7 +608,7 @@ export default function GenreMap() {
             </div>
 
             {/* Panel body */}
-            <div style={styles.panelBody}>
+            <div style={{ ...styles.panelBody, ...(isMobile && { flex: "none", maxHeight: "45vh" }) }}>
               {artistTracks ? (
                 <>
                   <div style={styles.panelBack} onClick={() => setArtistTracks(null)}>‹ {artistTracks.artist.name}</div>
@@ -619,10 +629,10 @@ export default function GenreMap() {
             </div>
           </>
         ) : (
-          <div style={styles.panelEmpty}>
+          <div style={{ ...styles.panelEmpty, ...(isMobile && { flex: "none", padding: "20px 32px" }) }}>
             <div style={styles.panelEmptyIcon}>◎</div>
-            <div>Click any node to explore genres, artists and tracks</div>
-            <div style={{ fontSize: 12, marginTop: 8, opacity: 0.6 }}>Double-click to drill into sub-genres</div>
+            <div>Tap a node to explore genres, artists and tracks</div>
+            <div style={{ fontSize: 12, marginTop: 8, opacity: 0.6 }}>Double-tap to drill into sub-genres</div>
           </div>
         )}
       </div>
