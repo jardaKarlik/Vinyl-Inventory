@@ -18,6 +18,7 @@ function esc(s) {
 // ── GenreMap component ─────────────────────────────────────────────────────
 export default function GenreMap() {
   const canvasRef = useRef(null);
+  const panelRef = useRef(null);
   const [genres, setGenres] = useState({});
   const [meta, setMeta] = useState({});
   const [loading, setLoading] = useState(true);
@@ -55,6 +56,13 @@ export default function GenreMap() {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  // Scroll panel into view when a genre is selected on mobile
+  useEffect(() => {
+    if (isMobile && selectedId && panelRef.current) {
+      panelRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [selectedId, isMobile]);
 
   // ── Load data ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -497,7 +505,7 @@ export default function GenreMap() {
   return (
     <div style={{ ...styles.root, ...(isMobile && { flexDirection: "column", height: "auto", minHeight: 0, overflow: "visible" }) }}>
       {/* ── Canvas area ── */}
-      <div style={{ ...styles.canvasWrap, ...(isMobile && { flex: "none", height: "min(55vh, 400px)" }) }}>
+      <div style={{ ...styles.canvasWrap, ...(isMobile && { flex: "none", height: selectedId !== null || navStack.length > 0 ? "min(50vh, 360px)" : "min(70vh, 520px)" }) }}>
         <canvas
           ref={canvasRef}
           style={styles.canvas}
@@ -572,8 +580,9 @@ export default function GenreMap() {
         )}
       </div>
 
-      {/* ── Side Panel ── */}
-      <div style={{ ...styles.panel, ...(isMobile && { width: "100%", borderLeft: "none", borderTop: "1px solid rgba(180,140,80,0.12)" }) }}>
+      {/* ── Side Panel — hidden on mobile until a genre is tapped ── */}
+      {(!isMobile || selectedId !== null || navStack.length > 0) && (
+      <div ref={panelRef} style={{ ...styles.panel, ...(isMobile && { width: "100%", borderLeft: "none", borderTop: "1px solid rgba(180,140,80,0.12)" }) }}>
         {/* Back */}
         {navStack.length > 0 && (
           <div style={styles.panelBack} onClick={navigateBack}>
@@ -636,6 +645,7 @@ export default function GenreMap() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
