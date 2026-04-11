@@ -46,6 +46,7 @@ export default function GenreMap() {
     W: 0, H: 0,
   });
   const animRef = useRef(null);
+  const lastTapRef = useRef(0);
 
   // ── Load data ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -105,7 +106,8 @@ export default function GenreMap() {
     const ctx = canvas.getContext("2d");
     const { nodes, panX, panY, scale, hovered, W, H } = stateRef.current;
     const dpr = window.devicePixelRatio || 1;
-    ctx.clearRect(0, 0, W * dpr, H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
 
     const tx = W / 2 + panX;
     const ty = H / 2 + panY;
@@ -127,8 +129,8 @@ export default function GenreMap() {
 
     // Edges
     ctx.save();
-    ctx.translate(tx * dpr, ty * dpr);
-    ctx.scale(scale * dpr, scale * dpr);
+    ctx.translate(tx, ty);
+    ctx.scale(scale, scale);
     const root = nodes.find((n) => n.isRoot);
     if (root) {
       nodes.forEach((n) => {
@@ -148,8 +150,8 @@ export default function GenreMap() {
 
     // Nodes
     ctx.save();
-    ctx.translate(tx * dpr, ty * dpr);
-    ctx.scale(scale * dpr, scale * dpr);
+    ctx.translate(tx, ty);
+    ctx.scale(scale, scale);
     nodes.forEach((n) => {
       const isHov = hovered === n.id;
       const isSel = stateRef.current.selectedId === n.id;
@@ -319,6 +321,54 @@ export default function GenreMap() {
     draw();
   };
 
+  const getCanvasPos = (touch) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      const { x, y } = getCanvasPos(e.touches[0]);
+      const n = hitNode(x, y);
+      if (n) {
+        stateRef.current.selectedId = n.id;
+        setSelectedId(n.id);
+        setActiveTab("subgenres");
+        setArtistTracks(null);
+        draw();
+      } else {
+        stateRef.current.isDragging = true;
+        stateRef.current.dragStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        stateRef.current.panStart = { x: stateRef.current.panX, y: stateRef.current.panY };
+      }
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (stateRef.current.isDragging && e.touches.length === 1) {
+      stateRef.current.panX = stateRef.current.panStart.x + (e.touches[0].clientX - stateRef.current.dragStart.x);
+      stateRef.current.panY = stateRef.current.panStart.y + (e.touches[0].clientY - stateRef.current.dragStart.y);
+      draw();
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    stateRef.current.isDragging = false;
+    const now = Date.now();
+    if (e.changedTouches.length === 1 && now - lastTapRef.current < 300) {
+      const { x, y } = getCanvasPos(e.changedTouches[0]);
+      const n = hitNode(x, y);
+      if (n && genres[n.id]?.children?.length) {
+        setNavStack((prev) => [...prev, currentRoot]);
+        setCurrentRoot(n.id);
+        setSelectedId(n.id);
+        setActiveTab("subgenres");
+        setArtistTracks(null);
+      }
+    }
+    lastTapRef.current = now;
+  };
+
   const zoom = (f) => {
     stateRef.current.scale = clamp(stateRef.current.scale * f, 0.12, 6);
     draw();
@@ -449,6 +499,9 @@ export default function GenreMap() {
           onMouseLeave={handleMouseUp}
           onDoubleClick={handleDblClick}
           onWheel={handleWheel}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         />
 
         {/* Search */}
@@ -590,7 +643,7 @@ const styles = {
     position: "relative",
   },
   canvasWrap: { flex: 1, position: "relative", overflow: "hidden" },
-  canvas: { width: "100%", height: "100%", cursor: "grab", display: "block" },
+  canvas: { width: "100%", height: "100%", cursor: "grab", display: "block", touchAction: "none" },
 
   search: {
     position: "absolute", top: 14, left: 14,

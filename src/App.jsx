@@ -269,7 +269,7 @@ function App() {
         <p className="collection-count">{countLabel}</p>
       </header>
 
-      <div className="search-sort-row">
+      {activeTab !== "genre-map" && <div className="search-sort-row">
         <input
           className="search-input"
           type="text"
@@ -340,7 +340,7 @@ function App() {
             <option value="bpm-desc">BPM High–Low</option>
           </select>
         )}
-      </div>
+      </div>}
 
 {activeTab === "vinyl" ? (
           <RecordList
