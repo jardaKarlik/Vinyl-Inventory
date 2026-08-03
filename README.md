@@ -1,10 +1,18 @@
 # Vinyl Inventory
 
+**Codebase:** https://github.com/jardaKarlik/Vinyl-Inventory
+
 A personal vinyl record collection manager built as a single-page React app. Catalogue your records with cover art, genres, and physical storage locations, then search and sort your collection across devices. It was mainly built as a solution to let houseguests browse your collection easily from their phone, not as a serious collection tracker.
 
 This has also been a project to experiment with AI assisted code writing, so a lot of what you see here was built just prompting Claude for solutions. I've reviewed the code to make sure there isn't anything aggregiously awful, but for the most part have let the AI do its thing and gone in and tweaked details afterwards.
 
 It is currently very much in a pre-alpha state, with a lot of rough edges. No database solution (just writing, reading and storing data as JSON), a crappy AI Generated background image, and I'm currently just running it locally in dev mode on a PI 3.
+
+## Hosting
+
+The app runs in a **GitHub Codespace** — no external hosting required. Open a Codespace from the repo and the dev server starts automatically (Node 18, Vite, port 5173 forwarded). For a minimal SPA like this, Codespaces is a convenient way to have a live dev environment without managing a separate deployment pipeline.
+
+> **Note:** This project previously used Railway for hosting. That setup has been removed in favour of GitHub Codespaces — partly to try the service for the first time, and partly because for a single-page app of this size it's a simpler and more practical option.
 
 ## Features
 
@@ -37,12 +45,13 @@ npm run dev
 
 ## Scripts
 
-| Command           | Description                    |
-| ----------------- | ------------------------------ |
-| `npm run dev`     | Dev server with API middleware |
-| `npm run build`   | Production build (static SPA)  |
-| `npm run preview` | Preview the production build   |
-| `npm run lint`    | Run ESLint                     |
+| Command                 | Description                              |
+| ----------------------- | ---------------------------------------- |
+| `npm run dev`           | Dev server with API middleware           |
+| `npm run build`         | Production build (static SPA)            |
+| `npm run preview`       | Preview the production build             |
+| `npm run lint`          | ESLint                                   |
+| `npm run convert-tracks`| Convert CSV exports → `public/digitalTracks.json` |
 
 ## Data & API
 
