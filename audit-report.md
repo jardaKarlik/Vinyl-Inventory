@@ -15,8 +15,9 @@ Vinyl Inventory (`C:\_dev\Vinyl-Inventory`, repo `jardaKarlik/Vinyl-Inventory`)
 | Remove public Pages | Done. `gh-pages` branch deleted; site returns 404. Last commit tagged `archive/gh-pages-last` (`81e0cf2`) and pushed. Pages API DELETE is refused (HTTP 422), so removal was by branch deletion. Deploy workflow `Deploy to GitHub Pages` (id 251347249) disabled. |
 | Archive mode, keep history and revival steps | Done. Obsidian `work/archive/2026/Vinyl Inventory.md`; `work/Index.md` Decisions Log row; `brain/Memories.md` line. Repo `docs/` (manifest, status, decisions, gotchas, lessons). README gained "Archive Status" with revival steps. |
 | Standardization | Done. Approved by owner. |
-| Commit all | Done. Commit `9fbfefe` on `feature/new-feature`. Not pushed. |
-| Disable Snyk if active | Repo webhook to `api.snyk.io` (id 666710017) deleted. GitHub App installation not verifiable from the CLI. **Owner action:** check GitHub Settings → Applications. |
+| Commit all | Done. Commits `9fbfefe` and `8e2fa32` on `feature/new-feature`, pushed to origin in this revision. |
+| Disable Snyk if active | Done. Repo webhook to `api.snyk.io` (id 666710017) deleted. Owner confirmed Snyk removed from GitHub Settings → Applications. |
+| Backup local data | Done by owner (confirmed 2026-11-19). |
 | Close ClickUp task `869edjtw2` | Done. Status set to `complete` (the list's closed status). Comment left on the task. |
 | ClickUp doc "Vinyl Inventory" | Done. Archive changelog entry appended to the Changelog section (appended, so it sits at the bottom of that section rather than the top). |
 | Fix stale "commit pending" wording | Done in this revision. |
@@ -38,7 +39,7 @@ Important Findings:
 
 ### Local Repository
 
-Status: Committed (`9fbfefe`), not pushed.
+Status: Clean working tree. Commits `9fbfefe` and `8e2fa32` pushed to `origin/feature/new-feature`.
 
 Coverage: About 90%.
 
@@ -57,7 +58,7 @@ Coverage: About 85%.
 Important Findings:
 - Pages: site removed (404). `gh-pages` branch gone; tag `archive/gh-pages-last` preserved.
 - Deploy workflow disabled (`disabled_manually`). `pages-build-deployment` shows active (GitHub-managed; no site to build now).
-- Snyk: webhook deleted. No Snyk check runs on recent commits. Repo-managed Snyk workflow removed 2026-08-16.
+- Snyk: webhook deleted; GitHub App removed by owner in GitHub Settings. No Snyk check runs on recent commits. Repo-managed Snyk workflow removed 2026-08-16.
 - ClickUp webhook (`search.clickup-eu.com`) remains. Not part of this project's scope; left in place.
 - Branches on origin: `main`, `feature/new-feature`, `Password-Prompt-Fix`, `claude/update-css-properties-L3WgB`, plus tag `archive/gh-pages-last`.
 
@@ -108,14 +109,12 @@ ClickUp:
 
 Coverage estimate:
 
-**88%** (up from 55%)
+**90%** (up from 55%)
 
 ---
 
 ## Missing Information
 
-- Whether the GitHub App for Snyk is still installed (owner must verify in GitHub Settings → Applications).
-- Whether `data/records.json` and `data/genreOptions.json` have been backed up off the machine.
 - Whether `feature/new-feature` should be merged into `main`. Not requested; deferred.
 - Owner's intent for the public repo visibility (still public). Not requested to change.
 - Contributors listed in the ClickUp doc; access not reviewed.
@@ -134,8 +133,6 @@ Files Generated (done): `docs/manifest.md`, `docs/status.md`, `docs/decisions.md
 Files Updated (done): `README.md`; Obsidian `work/archive/2026/Vinyl Inventory.md`, `work/Index.md`, `brain/Memories.md`; ClickUp task `869edjtw2` (closed); ClickUp doc changelog.
 
 Remaining (owner or follow-up):
-- Snyk GitHub App: remove from GitHub Settings if still installed (owner).
-- Back up `data/records.json` and `data/genreOptions.json` (owner).
 - Optional: rewrite the stale sections of the ClickUp doc.
 - Optional: `.github/copilot-instructions.md` `scripts/` reference (out of scope).
 
@@ -146,7 +143,7 @@ Remaining (owner or follow-up):
 - **Local data outside git:** `data/records.json` (221 records) and `data/genreOptions.json` are not in any remote. Losing the machine loses the collection data. Highest-risk item.
 - **Pages history:** the built site lives only at tag `archive/gh-pages-last`. Recoverable, but not visible on GitHub without the tag.
 - **Unmerged branch:** the archive commit and the Codespace README change are on `feature/new-feature` only. `main` remains stale locally and does not contain them.
-- **Unpushed commit:** `9fbfefe` exists only locally until pushed. Losing this clone before pushing loses the archive commit (the tag survives on GitHub).
+- **Single copy of local data:** the owner has backed up `data/records.json` and `data/genreOptions.json`. Keep that backup current if the collection changes; it is not in git.
 - **Tribal knowledge in ClickUp:** the note about the dist rebuild that task `869edjtw2` held is preserved in its comment trail and description.
 
 ---
