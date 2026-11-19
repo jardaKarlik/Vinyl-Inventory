@@ -152,6 +152,6 @@ Remaining (owner or follow-up):
 
 Status:
 
-**PENDING REVIEW**
+**APPROVED** (owner, 2026-11-19)
 
-This revision is the regenerated report. No further documentation changes will be made until it is reviewed.
+Owner approved this revision. Archive work is complete. Remaining items are owner follow-ups listed above, such as optionally rewriting the stale sections of the ClickUp doc.
