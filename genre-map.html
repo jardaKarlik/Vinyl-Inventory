@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genre Map — Vinyl Inventory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8e8f0;
+    --text-muted: #6b6b80;
+    --accent: #5c6bc0;
+    --accent2: #26c6da;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+    --panel-w: 340px;
+    --header-h: 56px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── HEADER (matches existing site nav) ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--header-h);
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 24px; gap: 0;
+  }
+  .logo {
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.15em;
+    color: var(--text-muted); text-transform: uppercase; margin-right: 40px;
+    white-space: nowrap;
+  }
+  .logo span { color: var(--accent2); }
+  nav { display: flex; gap: 2px; }
+  nav a {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; text-decoration: none;
+    padding: 6px 16px; border-radius: 3px;
+    color: var(--text-muted); transition: color .15s, background .15s;
+  }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  nav a.active { color: var(--accent2); background: rgba(38,198,218,0.08); }
+
+  /* breadcrumb */
+  .breadcrumb {
+    margin-left: auto; display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 11px; color: var(--text-muted);
+  }
+  .breadcrumb span { color: var(--text-muted); }
+  .breadcrumb .crumb { color: var(--text); cursor: pointer; }
+  .breadcrumb .crumb:hover { color: var(--accent2); }
+  .bc-sep { opacity: 0.3; }
+
+  /* ── CANVAS AREA ── */
+  #canvas-wrap {
+    position: fixed;
+    top: var(--header-h); left: 0;
+    right: var(--panel-w); bottom: 0;
+    overflow: hidden;
+  }
+  #canvas { width: 100%; height: 100%; cursor: grab; }
+  #canvas:active { cursor: grabbing; }
+
+  /* ── SIDE PANEL ── */
+  #panel {
+    position: fixed;
+    top: var(--header-h); right: 0;
+    width: var(--panel-w); bottom: 0;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  #panel-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #panel-genre-name {
+    font-size: 22px; font-weight: 800; line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  #panel-meta {
+    font-family: var(--mono); font-size: 11px; color: var(--text-muted);
+    display: flex; gap: 16px;
+  }
+  #panel-meta .stat { display: flex; flex-direction: column; gap: 2px; }
+  #panel-meta .stat-val { color: var(--text); font-size: 14px; }
+  #panel-desc {
+    padding: 14px 20px;
+    font-size: 13px; line-height: 1.6; color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #panel-tabs {
+    display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1; padding: 10px 0; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; background: none;
+    border: none; color: var(--text-muted); cursor: pointer;
+    border-bottom: 2px solid transparent; transition: all .15s;
+  }
+  .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+  #panel-body { flex: 1; overflow-y: auto; padding: 0; }
+  #panel-body::-webkit-scrollbar { width: 4px; }
+  #panel-body::-webkit-scrollbar-track { background: transparent; }
+  #panel-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  /* sub-genres list */
+  .genre-chip-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 16px 20px; }
+  .genre-chip {
+    font-family: var(--mono); font-size: 11px; padding: 5px 10px;
+    border-radius: 3px; cursor: pointer; transition: opacity .15s, transform .1s;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .genre-chip:hover { opacity: 0.8; transform: translateY(-1px); }
+
+  /* artists list */
+  .artist-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 20px; cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background .12s;
+  }
+  .artist-row:hover { background: rgba(255,255,255,0.04); }
+  .artist-avatar {
+    width: 32px; height: 32px; border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .artist-info { flex: 1; min-width: 0; }
+  .artist-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .artist-tracks { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+  .artist-badge {
+    font-family: var(--mono); font-size: 10px; padding: 2px 6px;
+    background: rgba(255,255,255,0.06); border-radius: 2px; color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* tracks list */
+  .track-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .track-row:hover { background: rgba(255,255,255,0.03); }
+  .track-num { font-family: var(--mono); font-size: 10px; color: var(--text-muted); width: 20px; text-align: right; flex-shrink:0; }
+  .track-info { flex: 1; min-width: 0; }
+  .track-title { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .track-sub { font-family: var(--mono); font-size: 10px; color: var(--text-muted); }
+  .track-bpm { font-family: var(--mono); font-size: 10px; color: var(--text-muted); flex-shrink:0; }
+
+  /* back button in panel */
+  .panel-back {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 20px; font-family: var(--mono); font-size: 11px;
+    color: var(--text-muted); cursor: pointer; border-bottom: 1px solid var(--border);
+    letter-spacing: 0.08em; transition: color .12s; flex-shrink: 0;
+  }
+  .panel-back:hover { color: var(--accent2); }
+  .panel-back svg { width: 14px; height: 14px; }
+
+  /* ── ZOOM CONTROLS ── */
+  #zoom-controls {
+    position: fixed; bottom: 24px; left: 24px;
+    display: flex; flex-direction: column; gap: 4px;
+    z-index: 50;
+  }
+  .zoom-btn {
+    width: 32px; height: 32px; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 3px;
+    color: var(--text); font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .12s;
+  }
+  .zoom-btn:hover { background: var(--surface); }
+
+  /* ── STATS BAR ── */
+  #stats-bar {
+    position: fixed; bottom: 24px;
+    left: 50%; transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px; padding: 6px 20px;
+    display: flex; gap: 20px; align-items: center;
+    font-family: var(--mono); font-size: 11px; color: var(--text-muted);
+    pointer-events: none;
+  }
+  #stats-bar span { color: var(--text); }
+
+  /* ── SEARCH ── */
+  #search-wrap {
+    position: fixed; top: calc(var(--header-h) + 16px); left: 16px;
+    z-index: 50;
+  }
+  #search {
+    width: 220px; padding: 8px 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 3px; color: var(--text);
+    font-family: var(--mono); font-size: 12px; outline: none;
+  }
+  #search:focus { border-color: rgba(255,255,255,0.2); }
+  #search::placeholder { color: var(--text-muted); }
+
+  /* loading overlay */
+  #loading {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+  }
+  .loader-text { font-family: var(--mono); font-size: 12px; color: var(--text-muted); letter-spacing: 0.15em; }
+  .loader-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.08); border-radius: 1px; overflow: hidden; }
+  .loader-fill { height: 100%; background: var(--accent2); animation: load 1.4s ease-in-out infinite; }
+  @keyframes load { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
+
+  .empty-state {
+    padding: 40px 20px; text-align: center;
+    font-family: var(--mono); font-size: 12px; color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  /* tooltip */
+  #tooltip {
+    position: fixed; pointer-events: none;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 8px 12px;
+    font-family: var(--mono); font-size: 11px; color: var(--text);
+    z-index: 200; opacity: 0; transition: opacity .1s;
+    max-width: 180px;
+  }
+  #tooltip.visible { opacity: 1; }
+  #tooltip .tt-name { font-weight: 700; margin-bottom: 2px; }
+  #tooltip .tt-count { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="loader-text">LOADING GENRE MAP</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<header>
+  <div class="logo">Vinyl <span>INV</span></div>
+  <nav>
+    <a href="index.html">Vinyls</a>
+    <a href="digital.html">Digital</a>
+    <a href="genre-map.html" class="active">Genre Map</a>
+  </nav>
+  <div class="breadcrumb" id="breadcrumb">
+    <span class="crumb" data-id="">All Genres</span>
+  </div>
+</header>
+
+<div id="search-wrap">
+  <input type="text" id="search" placeholder="Search genres…" autocomplete="off">
+</div>
+
+<canvas id="canvas"></canvas>
+<div id="canvas-wrap"></div>
+
+<div id="panel">
+  <div id="panel-header">
+    <div id="panel-genre-name">Select a genre</div>
+    <div id="panel-meta"></div>
+  </div>
+  <div id="panel-desc">Click any node in the map to explore a genre — drill into sub-genres, browse artists and tracks.</div>
+  <div id="panel-tabs" style="display:none">
+    <button class="tab-btn active" data-tab="subgenres">Sub-genres</button>
+    <button class="tab-btn" data-tab="artists">Artists</button>
+    <button class="tab-btn" data-tab="tracks">Tracks</button>
+  </div>
+  <div id="panel-back" class="panel-back" style="display:none" onclick="navigateBack()">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M10 4L6 8l4 4"/>
+    </svg>
+    Back
+  </div>
+  <div id="panel-body"></div>
+</div>
+
+<div id="zoom-controls">
+  <button class="zoom-btn" onclick="zoom(1.25)">+</button>
+  <button class="zoom-btn" onclick="zoom(0.8)">−</button>
+  <button class="zoom-btn" onclick="resetView()" title="Reset" style="font-size:12px">⌂</button>
+</div>
+
+<div id="stats-bar">
+  <div>Genres <span id="stat-genres">—</span></div>
+  <div>Tracks <span id="stat-tracks">—</span></div>
+  <div>Artists <span id="stat-artists">—</span></div>
+</div>
+
+<div id="tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-count" id="tt-count"></div>
+</div>
+
+<script>
+// ─── State ───────────────────────────────────────────────────────────────────
+let GENRES = {};
+let META = {};
+let currentRoot = null;       // null = show top-level families
+let navStack = [];             // for back navigation
+let selectedId = null;
+let activeTab = 'subgenres';
+
+// Canvas / pan-zoom
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H, dpr = window.devicePixelRatio || 1;
+let panX = 0, panY = 0, scale = 1;
+let isDragging = false, dragStart = {x:0,y:0}, panStart = {x:0,y:0};
+let nodes = [];           // {id, x, y, r, color, label, trackCount}
+let hovered = null;
+
+// ─── Load data ────────────────────────────────────────────────────────────────
+async function loadData() {
+  try {
+    const res = await fetch('genreMap.json');
+    const data = await res.json();
+    GENRES = data.genres;
+    META = data.meta;
+    document.getElementById('stat-genres').textContent = META.total_genres;
+    document.getElementById('stat-tracks').textContent = META.mapped_tracks.toLocaleString();
+    const allArtists = new Set();
+    Object.values(GENRES).forEach(g => g.artists.forEach(a => allArtists.add(a.name)));
+    document.getElementById('stat-artists').textContent = allArtists.size;
+  } catch(e) {
+    console.error('Failed to load genreMap.json — make sure it is in the same folder.', e);
+  }
+  document.getElementById('loading').style.display = 'none';
+  resize();
+  buildGraph(null);
+}
+
+// ─── Graph layout ─────────────────────────────────────────────────────────────
+function getVisibleGenres(rootId) {
+  if (rootId === null) {
+    // top-level: all genres with no parent
+    return Object.keys(GENRES).filter(id => !GENRES[id].parent);
+  }
+  // show the rootId node + its children
+  const g = GENRES[rootId];
+  if (!g) return [];
+  const ids = [rootId];
+  (g.children || []).forEach(cid => { if (GENRES[cid]) ids.push(cid); });
+  return ids;
+}
+
+function buildGraph(rootId) {
+  currentRoot = rootId;
+  const ids = getVisibleGenres(rootId);
+
+  // Radial layout — root at centre, children around it
+  const cx = 0, cy = 0;
+  nodes = [];
+
+  if (ids.length === 0) return;
+
+  if (rootId === null) {
+    // Top-level families in a circle
+    const R = Math.min(W, H) * 0.28;
+    ids.forEach((id, i) => {
+      const angle = (2 * Math.PI * i / ids.length) - Math.PI / 2;
+      const g = GENRES[id];
+      const count = g.trackCount || 0;
+      const r = clamp(18 + Math.sqrt(count) * 1.2, 22, 60);
+      nodes.push({
+        id, x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle),
+        r, color: g.color, label: g.name, trackCount: count, parent: null
+      });
+    });
+  } else {
+    // Root node in centre
+    const rootG = GENRES[rootId];
+    const rootR = clamp(28 + Math.sqrt(rootG.trackCount || 0) * 1.2, 32, 70);
+    nodes.push({
+      id: rootId, x: cx, y: cy,
+      r: rootR, color: rootG.color, label: rootG.name,
+      trackCount: rootG.trackCount, isRoot: true, parent: null
+    });
+    // Children radially
+    const children = (rootG.children || []).filter(cid => GENRES[cid]);
+    const R = Math.min(W, H) * 0.26;
+    children.forEach((cid, i) => {
+      const angle = (2 * Math.PI * i / children.length) - Math.PI / 2;
+      const g = GENRES[cid];
+      const count = g.trackCount || 0;
+      const r = clamp(14 + Math.sqrt(count) * 0.9, 16, 45);
+      nodes.push({
+        id: cid, x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle),
+        r, color: g.color, label: g.name, trackCount: count
+      });
+    });
+  }
+
+  // Reset view nicely
+  resetView();
+  draw();
+  updateBreadcrumb();
+}
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+// ─── Canvas rendering ─────────────────────────────────────────────────────────
+function resize() {
+  const wrap = document.getElementById('canvas-wrap');
+  W = wrap.clientWidth; H = wrap.clientHeight;
+  canvas.style.position = 'fixed';
+  canvas.style.top = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
+  canvas.style.left = '0';
+  canvas.style.width = (W) + 'px';
+  canvas.style.height = (H) + 'px';
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+  draw();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Background grid (subtle)
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 1;
+  const gs = 60 * scale;
+  const ox = (panX % gs + gs) % gs;
+  const oy = (panY % gs + gs) % gs;
+  for (let x = ox - gs; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = oy - gs; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  ctx.restore();
+
+  const tx = W/2 + panX, ty = H/2 + panY;
+
+  // Edges first
+  ctx.save();
+  ctx.translate(tx, ty); ctx.scale(scale, scale);
+  if (currentRoot !== null) {
+    const root = nodes.find(n => n.id === currentRoot);
+    if (root) {
+      nodes.forEach(n => {
+        if (n.id === currentRoot) return;
+        ctx.beginPath();
+        ctx.moveTo(root.x, root.y);
+        ctx.lineTo(n.x, n.y);
+        const gradient = ctx.createLinearGradient(root.x, root.y, n.x, n.y);
+        gradient.addColorStop(0, hexA(GENRES[currentRoot].color, 0.4));
+        gradient.addColorStop(1, hexA(n.color, 0.15));
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 1 / scale;
+        ctx.stroke();
+      });
+    }
+  }
+  ctx.restore();
+
+  // Nodes
+  ctx.save();
+  ctx.translate(tx, ty); ctx.scale(scale, scale);
+  nodes.forEach(n => {
+    const isHovered = hovered === n.id;
+    const isSelected = selectedId === n.id;
+    const r = isHovered ? n.r * 1.08 : n.r;
+
+    // Glow
+    if (isHovered || isSelected) {
+      ctx.beginPath();
+      const glow = ctx.createRadialGradient(n.x, n.y, r*0.5, n.x, n.y, r*2.2);
+      glow.addColorStop(0, hexA(n.color, 0.25));
+      glow.addColorStop(1, hexA(n.color, 0));
+      ctx.fillStyle = glow;
+      ctx.arc(n.x, n.y, r*2.2, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // Circle
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = n.isRoot ? n.color : hexA(n.color, 0.18);
+    ctx.fill();
+    ctx.strokeStyle = isSelected ? '#ffffff' : hexA(n.color, isHovered ? 0.9 : 0.6);
+    ctx.lineWidth = (isSelected ? 2 : 1) / scale;
+    ctx.stroke();
+
+    // Track count arc
+    if (n.trackCount > 0 && !n.isRoot) {
+      const maxCount = Math.max(...nodes.map(nn => nn.trackCount || 0));
+      const frac = Math.min(n.trackCount / maxCount, 1);
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r + 4/scale, -Math.PI/2, -Math.PI/2 + frac*2*Math.PI);
+      ctx.strokeStyle = hexA(n.color, 0.5);
+      ctx.lineWidth = 2 / scale;
+      ctx.stroke();
+    }
+
+    // Label
+    const fontSize = clamp(10 / scale, 9, 14);
+    ctx.font = `600 ${fontSize}px 'Syne', sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Label below or inside depending on node size
+    if (r * scale > 32) {
+      ctx.fillStyle = n.isRoot ? 'rgba(0,0,0,0.8)' : n.color;
+      ctx.fillText(n.label, n.x, n.y);
+    } else {
+      ctx.fillStyle = hexA(n.color, 0.9);
+      ctx.fillText(n.label, n.x, n.y + r + 12/scale);
+    }
+
+    // Track count badge
+    if (n.trackCount > 0) {
+      const countSize = clamp(9 / scale, 8, 11);
+      ctx.font = `400 ${countSize}px 'Space Mono', monospace`;
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      const countY = r * scale > 32 ? n.y + 14/scale : n.y + r + 24/scale;
+      ctx.fillText(n.trackCount, n.x, countY);
+    }
+  });
+  ctx.restore();
+}
+
+function hexA(hex, alpha) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// ─── Interaction ──────────────────────────────────────────────────────────────
+function worldToLocal(ex, ey) {
+  return {
+    x: (ex - W/2 - panX) / scale,
+    y: (ey - H/2 - panY) / scale,
+  };
+}
+
+function hitNode(ex, ey) {
+  const {x, y} = worldToLocal(ex, ey);
+  return nodes.find(n => {
+    const dx = n.x - x, dy = n.y - y;
+    return dx*dx + dy*dy <= n.r * n.r;
+  });
+}
+
+canvas.addEventListener('mousedown', e => {
+  const n = hitNode(e.clientX, e.clientY - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')));
+  if (n) {
+    selectGenre(n.id);
+  } else {
+    isDragging = true;
+    dragStart = {x: e.clientX, y: e.clientY};
+    panStart = {x: panX, y: panY};
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  const cy = e.clientY - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h'));
+  if (isDragging) {
+    panX = panStart.x + (e.clientX - dragStart.x);
+    panY = panStart.y + (e.clientY - dragStart.y);
+    draw();
+    return;
+  }
+  const n = hitNode(e.clientX, cy);
+  const newHovered = n ? n.id : null;
+  if (newHovered !== hovered) {
+    hovered = newHovered;
+    canvas.style.cursor = hovered ? 'pointer' : 'grab';
+    draw();
+  }
+  // Tooltip
+  const tt = document.getElementById('tooltip');
+  if (n) {
+    document.getElementById('tt-name').textContent = n.label;
+    document.getElementById('tt-count').textContent = `${n.trackCount} tracks`;
+    tt.style.left = (e.clientX + 12) + 'px';
+    tt.style.top = (e.clientY + 12) + 'px';
+    tt.classList.add('visible');
+  } else {
+    tt.classList.remove('visible');
+  }
+});
+
+canvas.addEventListener('mouseup', () => { isDragging = false; });
+canvas.addEventListener('mouseleave', () => {
+  isDragging = false; hovered = null;
+  document.getElementById('tooltip').classList.remove('visible');
+  draw();
+});
+
+canvas.addEventListener('dblclick', e => {
+  const cy = e.clientY - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h'));
+  const n = hitNode(e.clientX, cy);
+  if (n) drillDown(n.id);
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY < 0 ? 1.12 : 0.89;
+  const cx = e.clientX - W/2;
+  const cy = e.clientY - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) - H/2;
+  panX = cx + (panX - cx) * factor;
+  panY = cy + (panY - cy) * factor;
+  scale = clamp(scale * factor, 0.15, 5);
+  draw();
+}, {passive: false});
+
+window.addEventListener('resize', resize);
+
+// ─── Genre navigation ─────────────────────────────────────────────────────────
+function selectGenre(id) {
+  selectedId = id;
+  draw();
+  showPanel(id);
+}
+
+function drillDown(id) {
+  const g = GENRES[id];
+  if (!g || !g.children || g.children.length === 0) return;
+  navStack.push(currentRoot);
+  buildGraph(id);
+  selectedId = id;
+  showPanel(id);
+}
+
+function navigateBack() {
+  if (navStack.length === 0) return;
+  const prev = navStack.pop();
+  buildGraph(prev);
+  selectedId = prev;
+  if (prev !== null) showPanel(prev);
+  else clearPanel();
+}
+
+// ─── Panel ────────────────────────────────────────────────────────────────────
+function showPanel(id) {
+  const g = GENRES[id];
+  if (!g) return;
+  document.getElementById('panel-genre-name').textContent = g.name;
+  document.getElementById('panel-genre-name').style.color = g.color;
+  document.getElementById('panel-desc').textContent = g.desc || '';
+  document.getElementById('panel-meta').innerHTML = `
+    <div class="stat"><span class="stat-val">${g.trackCount}</span>tracks</div>
+    <div class="stat"><span class="stat-val">${g.artistCount}</span>artists</div>
+    <div class="stat"><span class="stat-val">${(g.children||[]).length}</span>sub-genres</div>
+  `;
+  document.getElementById('panel-tabs').style.display = 'flex';
+  document.getElementById('panel-back').style.display = navStack.length > 0 ? 'flex' : 'none';
+  activeTab = 'subgenres';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'subgenres'));
+  renderTab(id, 'subgenres');
+}
+
+function clearPanel() {
+  document.getElementById('panel-genre-name').textContent = 'Select a genre';
+  document.getElementById('panel-genre-name').style.color = '';
+  document.getElementById('panel-meta').innerHTML = '';
+  document.getElementById('panel-desc').textContent = 'Click any node in the map to explore a genre.';
+  document.getElementById('panel-tabs').style.display = 'none';
+  document.getElementById('panel-back').style.display = 'none';
+  document.getElementById('panel-body').innerHTML = '';
+}
+
+function renderTab(id, tab) {
+  const g = GENRES[id];
+  const body = document.getElementById('panel-body');
+  body.innerHTML = '';
+
+  if (tab === 'subgenres') {
+    const children = (g.children || []).filter(cid => GENRES[cid]);
+    if (children.length === 0) {
+      body.innerHTML = '<div class="empty-state">No sub-genres.<br>Double-click node to see artists.</div>';
+      return;
+    }
+    const list = document.createElement('div');
+    list.className = 'genre-chip-list';
+    children.forEach(cid => {
+      const cg = GENRES[cid];
+      const chip = document.createElement('div');
+      chip.className = 'genre-chip';
+      chip.textContent = cg.name + (cg.trackCount ? ` · ${cg.trackCount}` : '');
+      chip.style.background = hexA2(cg.color, 0.12);
+      chip.style.color = cg.color;
+      chip.style.borderColor = hexA2(cg.color, 0.3);
+      chip.onclick = () => { drillDown(cid); };
+      list.appendChild(chip);
+    });
+    body.appendChild(list);
+  } else if (tab === 'artists') {
+    if (!g.artists || g.artists.length === 0) {
+      body.innerHTML = '<div class="empty-state">No artists found.</div>';
+      return;
+    }
+    g.artists.forEach((a, i) => {
+      const row = document.createElement('div');
+      row.className = 'artist-row';
+      const initials = a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      row.innerHTML = `
+        <div class="artist-avatar" style="background:${hexA2(g.color,0.15)};color:${g.color}">${initials}</div>
+        <div class="artist-info">
+          <div class="artist-name">${esc(a.name)}</div>
+          <div class="artist-tracks">${a.trackCount} track${a.trackCount!==1?'s':''}</div>
+        </div>
+        <div class="artist-badge">#${i+1}</div>`;
+      row.onclick = () => showArtistTracks(id, a);
+      body.appendChild(row);
+    });
+  } else if (tab === 'tracks') {
+    const allTracks = [];
+    (g.artists || []).forEach(a => {
+      a.tracks.forEach(t => allTracks.push({...t, artist: a.name}));
+    });
+    allTracks.sort((a,b) => (a.title||'').localeCompare(b.title||''));
+    allTracks.slice(0, 200).forEach((t, i) => {
+      const row = document.createElement('div');
+      row.className = 'track-row';
+      row.innerHTML = `
+        <div class="track-num">${i+1}</div>
+        <div class="track-info">
+          <div class="track-title">${esc(t.title)}</div>
+          <div class="track-sub">${esc(t.artist)}${t.album ? ' · ' + esc(t.album) : ''}</div>
+        </div>
+        <div class="track-bpm">${t.bpm ? t.bpm+'bpm' : ''}</div>`;
+      body.appendChild(row);
+    });
+    if (allTracks.length > 200) {
+      body.innerHTML += `<div class="empty-state" style="padding:12px 20px">… and ${allTracks.length-200} more</div>`;
+    }
+  }
+}
+
+function showArtistTracks(genreId, artist) {
+  const g = GENRES[genreId];
+  const body = document.getElementById('panel-body');
+  // Show back to artists header
+  const header = document.createElement('div');
+  header.className = 'panel-back';
+  header.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4L6 8l4 4"/></svg> ${esc(artist.name)}`;
+  header.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'artists'));
+    renderTab(genreId, 'artists');
+  };
+  body.innerHTML = '';
+  body.appendChild(header);
+  artist.tracks.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'track-row';
+    row.innerHTML = `
+      <div class="track-num">${i+1}</div>
+      <div class="track-info">
+        <div class="track-title">${esc(t.title)}</div>
+        <div class="track-sub">${t.album ? esc(t.album) : ''}${t.year ? ' · '+t.year : ''}</div>
+      </div>
+      <div class="track-bpm">${t.bpm ? t.bpm+'bpm' : ''} ${t.key ? '<br>'+t.key : ''}</div>`;
+    body.appendChild(row);
+  });
+}
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTab = btn.dataset.tab;
+    if (selectedId) renderTab(selectedId, activeTab);
+  });
+});
+
+// ─── Breadcrumb ───────────────────────────────────────────────────────────────
+function updateBreadcrumb() {
+  const bc = document.getElementById('breadcrumb');
+  const parts = [];
+  // Reconstruct path from navStack
+  const stack = [...navStack];
+  if (stack[0] !== null && stack[0] !== undefined) stack.unshift(null);
+
+  parts.push(`<span class="crumb" onclick="jumpToRoot()">All Genres</span>`);
+  navStack.forEach((id, i) => {
+    if (id !== null && GENRES[id]) {
+      parts.push(`<span class="bc-sep">›</span>`);
+      parts.push(`<span class="crumb" onclick="jumpTo(${JSON.stringify(id)}, ${i})">${esc(GENRES[id].name)}</span>`);
+    }
+  });
+  if (currentRoot !== null && GENRES[currentRoot]) {
+    parts.push(`<span class="bc-sep">›</span>`);
+    parts.push(`<span class="crumb" style="color:var(--accent2)">${esc(GENRES[currentRoot].name)}</span>`);
+  }
+  bc.innerHTML = parts.join('');
+}
+
+function jumpToRoot() {
+  navStack = [];
+  buildGraph(null);
+  clearPanel();
+}
+
+function jumpTo(id, stackIdx) {
+  // Pop back to this level
+  navStack = navStack.slice(0, stackIdx + 1);
+  buildGraph(id);
+  selectedId = id;
+  showPanel(id);
+}
+
+// ─── Search ───────────────────────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  if (!q) { draw(); return; }
+  const match = Object.keys(GENRES).find(id =>
+    GENRES[id].name.toLowerCase().includes(q)
+  );
+  if (match) {
+    // Find it in the graph
+    const n = nodes.find(nd => nd.id === match);
+    if (n) {
+      hovered = match;
+      // Pan to it
+      panX = -n.x * scale; panY = -n.y * scale;
+      draw();
+    } else {
+      // Navigate to it
+      const g = GENRES[match];
+      if (g.parent) {
+        navStack = [];
+        buildGraph(g.parent);
+        selectedId = match;
+        showPanel(match);
+      }
+    }
+  }
+});
+
+// ─── Zoom ─────────────────────────────────────────────────────────────────────
+function zoom(factor) {
+  scale = clamp(scale * factor, 0.15, 5);
+  draw();
+}
+function resetView() {
+  scale = 1; panX = 0; panY = 0;
+  draw();
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function hexA2(hex, alpha) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>

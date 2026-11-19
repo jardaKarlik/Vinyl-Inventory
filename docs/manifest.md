@@ -1,0 +1,21 @@
+# Manifest — Vinyl Inventory
+
+- **Status:** ARCHIVED (2026-11-19). See [status.md](status.md).
+- **Type:** Personal vinyl-record collection manager, single-page React app (PWA).
+- **Owner:** jardaKarlik (GitHub)
+- **Repository:** https://github.com/jardaKarlik/Vinyl-Inventory (public)
+- **Local working copy:** `C:\_dev\Vinyl-Inventory`
+- **Default branch on GitHub:** `main` (remote head `6e538ce`). Local `main` is stale (`66c725e`).
+- **Last working branch:** `feature/new-feature` (carries the Codespace README change; the archive commit is added here).
+- **Stack:** React 19.2, Vite 7.3, vite-plugin-pwa 1.2, plain CSS, ESLint 9, xlsx 0.18.5, Node 20 (CI). README says Node 18.
+- **Persistence:** JSON files written only by Vite dev-server middleware (`data/records.json`, `data/genreOptions.json`). Production build is static and read-only.
+- **Hosting history:**
+  - Raspberry Pi 3, dev mode (original, per ClickUp doc).
+  - GitHub Pages, deployed from `gh-pages` on every push to `main` (live until 2026-11-19).
+  - GitHub Codespace (documented on `feature/new-feature` only).
+- **Archived hosting state (2026-11-19):** Pages site removed (branch deleted, see [decisions.md](decisions.md)); deploy workflow disabled.
+- **Recovery pointers:**
+  - Pages branch last commit: `81e0cf2` (tag `archive/gh-pages-last`).
+  - Full recovery steps: [README.md](../README.md#archive-status) and Obsidian note `work/archive/2026/Vinyl Inventory.md`.
+- **Related:** ClickUp doc "Vinyl Inventory" (VinylHunter list, workspace 90121813699); ClickUp task `869edjtw2` (stale standup note).
+- **Not in repo, must back up:** `data/records.json` (221 records) and `data/genreOptions.json`. Both are gitignored and exist only on the owner's machine.

@@ -8,9 +8,37 @@ This has also been a project to experiment with AI assisted code writing, so a l
 
 It is currently very much in a pre-alpha state, with a lot of rough edges. No database solution (just writing, reading and storing data as JSON), a crappy AI Generated background image, and I'm currently just running it locally in dev mode on a PI 3.
 
+## Archive Status
+
+**This project is archived (2026-11-19).** No further development is planned.
+
+- Public GitHub Pages site **removed**. The `gh-pages` branch was deleted; its last commit is kept at tag `archive/gh-pages-last` (`81e0cf2`).
+- Deploy workflow `Deploy to GitHub Pages` is **disabled**.
+- Snyk webhook **removed**. Snyk daily scan was removed earlier (2026-08-16).
+- Full history of decisions, gotchas, and status: [docs/](docs/) (`manifest.md`, `status.md`, `decisions.md`, `gotchas.md`, `lessons.md`).
+
+### How to revive
+
+```bash
+git clone https://github.com/jardaKarlik/Vinyl-Inventory.git
+cd Vinyl-Inventory
+git checkout feature/new-feature   # last working head, carries the archive commit
+npm install
+# restore data/records.json and data/genreOptions.json from your own backup (gitignored, not in the repo)
+npm run dev                        # http://localhost:5173
+```
+
+To republish the static site:
+
+```bash
+git push origin archive/gh-pages-last:refs/heads/gh-pages
+gh workflow enable 251347249 --repo jardaKarlik/Vinyl-Inventory
+# then re-enable Pages in Settings → Pages, source: gh-pages
+```
+
 ## Hosting
 
-The app runs in a **GitHub Codespace** — no external hosting required. Open a Codespace from the repo and the dev server starts automatically (Node 18, Vite, port 5173 forwarded). For a minimal SPA like this, Codespaces is a convenient way to have a live dev environment without managing a separate deployment pipeline.
+Archived. The app was previously served from GitHub Pages (removed 2026-11-19, see above). It was run in dev mode on a Raspberry Pi 3 and can be opened as a GitHub Codespace. Node 20 is used in CI; the earlier README said Node 18.
 
 > **Note:** This project previously used Railway for hosting. That setup has been removed in favour of GitHub Codespaces — partly to try the service for the first time, and partly because for a single-page app of this size it's a simpler and more practical option.
 
